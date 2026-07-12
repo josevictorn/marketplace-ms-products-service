@@ -2,11 +2,14 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
+  Param,
   Post,
   Req,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -21,5 +24,23 @@ export class ProductsController {
     }
 
     return this.productsService.create(createProductDto, user.id);
+  }
+
+  @Public()
+  @Get()
+  async findAllActive() {
+    return this.productsService.findAllActive();
+  }
+
+  @Public()
+  @Get('seller/:sellerId')
+  async findAllActiveBySeller(@Param('sellerId') sellerId: string) {
+    return this.productsService.findAllActiveBySeller(sellerId);
+  }
+
+  @Public()
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.productsService.findOne(id);
   }
 }
